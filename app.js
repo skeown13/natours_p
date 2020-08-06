@@ -2,11 +2,13 @@
 const fs = require("fs")
 
 const express = require("express")
-const { RSA_NO_PADDING } = require("constants")
+const morgan = require("morgan")
 
 const app = express()
 
 // Middleware (function that can modify the incoming request data)
+app.use(morgan("dev"))
+
 app.use(express.json())
 
 app.use((req, res, next) => {
