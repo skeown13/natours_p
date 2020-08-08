@@ -224,8 +224,8 @@ const deleteUser = (req, res) => {
 }
 
 // ROUTES
-app.use("/api/v1/tours", tourRouter)
 const tourRouter = express.Router()
+const userRouter = express.Router()
 
 tourRouter.route("/").get(getAllTours).post(createTour)
 
@@ -235,13 +235,17 @@ tourRouter
   .patch(updateTour)
   .delete(deleteTour)
 
-app.route("/api/v1/users").get(getAllUsers).post(createUser)
+userRouter.route("/").get(getAllUsers).post(createUser)
 
-app
-  .route("/api/v1/users/:id")
+userRouter
+  .route("/:id")
   .get(getUser)
   .patch(updateUser)
   .delete(deleteUser)
+
+// called mounting the router --must be called after we declare them
+app.use("/api/v1/tours", tourRouter)
+app.use("/api/v1/users", userRouter)
 
 // START SERVER
 const PORT = 3000
