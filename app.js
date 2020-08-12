@@ -21,20 +21,8 @@ app.use((req, res, next) => {
   next()
 })
 
-const tours = JSON.parse(
-  fs.readFileSync(
-    `${__dirname}/dev-data/data/tours-simple.json`
-  )
-)
-const users = JSON.parse(
-  fs.readFileSync(`${__dirname}/dev-data/data/users.json`)
-)
-
-// ROUTE HANDLERS
-
 // ROUTES
 
-// called mounting the router --must be called after we declare them
 app.use("/api/v1/tours", tourRouter)
 app.use("/api/v1/users", userRouter)
 

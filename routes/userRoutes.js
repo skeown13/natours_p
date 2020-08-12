@@ -1,5 +1,9 @@
 const express = require("express")
 
+const users = JSON.parse(
+  fs.readFileSync(`${__dirname}/dev-data/data/users.json`)
+)
+
 const getAllUsers = (req, res) => {
   res.status(500).json({
     status: "error",
@@ -113,3 +117,5 @@ router
   .get(getUser)
   .patch(updateUser)
   .delete(deleteUser)
+
+module.exports = router
