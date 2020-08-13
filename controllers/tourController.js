@@ -6,6 +6,20 @@ const tours = JSON.parse(
   )
 )
 
+// This middleware checks if a valid id is present in the url path. It gets exported from here and called in tourRoutes.js in the param middleware. If a valid ID is NOT found it returns the code within the if statement. If a valid ID IS found it skips the if statement and calls next() to go onto the next middleware.
+exports.checkID = (req, res, next, val) => {
+  console.log(`Tour id is: ${val}`)
+
+  // * 1 against a string auto converts string to number
+  if (req.params.id * 1 > tours.length) {
+    return res.status(404).json({
+      status: "fail",
+      message: "Invalid ID",
+    })
+  }
+  next()
+}
+
 exports.getAllTours = (req, res) => {
   console.log(req.requestTime)
   res.status(200).json({
@@ -22,17 +36,8 @@ exports.getAllTours = (req, res) => {
 exports.getTour = (req, res) => {
   console.log(req.params)
 
-  // * 1 against a string auto converts string to number
   const id = req.params.id * 1
   const tour = tours.find((el) => el.id === id)
-
-  // if (id > tours.length) {
-  if (!tour) {
-    return res.status(404).json({
-      status: "fail",
-      message: "Invalid ID",
-    })
-  }
 
   res.status(200).json({
     status: "success",
@@ -43,8 +48,6 @@ exports.getTour = (req, res) => {
 }
 
 exports.createTour = (req, res) => {
-  // console.log(req.body)
-
   const newId = tours[tours.length - 1].id + 1
   const newTour = Object.assign({ id: newId }, req.body)
 
@@ -64,13 +67,6 @@ exports.createTour = (req, res) => {
 }
 
 exports.updateTour = (req, res) => {
-  if (req.params.id * 1 > tours.length) {
-    return res.status(404).json({
-      status: "fail",
-      message: "Invalid ID",
-    })
-  }
-
   res.status(200).json({
     status: "success",
     data: {
@@ -80,13 +76,6 @@ exports.updateTour = (req, res) => {
 }
 
 exports.deleteTour = (req, res) => {
-  if (req.params.id * 1 > tours.length) {
-    return res.status(404).json({
-      status: "fail",
-      message: "Invalid ID",
-    })
-  }
-
   // status code 204 is "no content"
   res.status(204).json({
     status: "success",
