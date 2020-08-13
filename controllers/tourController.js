@@ -20,6 +20,17 @@ exports.checkID = (req, res, next, val) => {
   next()
 }
 
+exports.checkBody = (req, res, next) => {
+  console.log("We are checking the body!")
+  if (!req.body.name || !req.body.price) {
+    return res.status(400).json({
+      status: "fail",
+      message: "New Tour must include Name and Price",
+    })
+  }
+  next()
+}
+
 exports.getAllTours = (req, res) => {
   console.log(req.requestTime)
   res.status(200).json({
