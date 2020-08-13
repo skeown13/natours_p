@@ -1,3 +1,5 @@
+// This app.js is used to configure everything that has to do with the Express Application
+
 const express = require("express")
 const morgan = require("morgan")
 
@@ -7,7 +9,9 @@ const userRouter = require("./routes/userRoutes")
 const app = express()
 
 // MIDDLEWARE (function that can modify the incoming request data)
-app.use(morgan("dev"))
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"))
+}
 app.use(express.json())
 
 app.use(express.static(`${__dirname}/public`))
