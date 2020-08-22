@@ -28,21 +28,29 @@ const Tour = require("../models/tourModel")
 exports.getAllTours = async (req, res) => {
   try {
     // BUILD QUERY
-    // 1) Filtering
+    // 1A) Filtering
     const queryObj = { ...req.query }
     const excludedFields = ["page", "sort", "limit", "fields"]
     excludedFields.forEach(el => delete queryObj[el])
 
-    // 2) Advanced filtering
+    // 1B) Advanced filtering
     // In the real world we would then need to write documentation about which requests can be made using which https methods and also what kind of filtering/sorting/etc are available and how they can be used.
     let queryString = JSON.stringify(queryObj)
     queryString = queryString.replace(
       /\b(gte|gt|lte|lt)\b/g,
       match => `$${match}`
     )
-    console.log(JSON.parse(queryString))
 
-    const query = Tour.find(JSON.parse(queryString))
+    let query = Tour.find(JSON.parse(queryString))
+
+    // 2) SORTING
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(",").join(" ")
+      query = query.sort(sortBy)
+      // sort("price ratingsAverage")
+    } else {
+      query = query.sort("-createdAt")
+    }
 
     // EXECUTE QUERY
     const tours = await query
