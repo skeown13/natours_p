@@ -59,15 +59,23 @@ exports.getAllTours = async (req, res) => {
     } else {
       query = query.select("-__v")
     }
-    // if (req.query.limit) {
-    //   const limitBy = req.query.limit.split(",").join(" ")
-    //   query = query.limit(limitBy)
-    // } else {
-    //   console.log("?")
-    // }
+
+    // 4) PAGINATION
+    // page=3&limit=10, 1-10 page 1, 11-20 page 2, 21-30 page 3
+    const page = req.query.page * 1 || 1
+    const limit = req.query.limit * 1 || 100
+    const skip = (page - 1) * limit
+
+    query = query.skip(skip).limit(limit)
+
+    if (req.query.page) {
+      const numTours = await Tour.countDocuments()
+      if (skip >= numTours) throw new Error("This page does not exist!")
+    }
 
     // EXECUTE QUERY
     const tours = await query
+    //query.sort().select().skip().limit()
 
     // const query = Tour.find()
     //   .where("duration")
