@@ -1,30 +1,5 @@
 const Tour = require("../models/tourModel")
 
-// // // // // // // // // // // // // // // // //
-
-// NO LONGER NEEDED NOW THAT WE HAVE OUR MONGODB SET UP. IT WAS JUST USED FOR TESTING PURPOSES!
-// const tours = JSON.parse(
-//   fs.readFileSync(
-//     `${__dirname}/../dev-data/data/tours-simple.json`
-//   )
-// )
-
-// This middleware checks if a valid id is present in the url path. It gets exported from here and called in tourRoutes.js in the param middleware. If a valid ID is NOT found it returns the code within the if statement. If a valid ID IS found it skips the if statement and calls next() to go onto the next middleware.
-// exports.checkID = (req, res, next, val) => {
-//   console.log(`Tour id is: ${val}`)
-
-//   // * 1 against a string auto converts string to number
-//   if (req.params.id * 1 > tours.length) {
-//     return res.status(404).json({
-//       status: "fail",
-//       message: "Invalid ID",
-//     })
-//   }
-//   next()
-// }
-
-// // // // // // // // // // // // // // // // //
-
 exports.getTopTours = (req, res, next) => {
   // limit=5&sort=-ratingsAverage,price
   req.query.limit = "5"
@@ -33,16 +8,18 @@ exports.getTopTours = (req, res, next) => {
   next()
 }
 
-exports.getAllTours = async (req, res) => {
-  try {
-    console.log(req.query)
-    // BUILD QUERY
-    // 1A) Filtering
-    const queryObj = { ...req.query }
+class APIFeatures {
+  constructor(query, queryString) {
+    this.query = query
+    this.queryString = queryString
+  }
+
+  filter() {
+    const queryObj = { ...this.queryString }
+    console.log(queryObj)
     const excludedFields = ["page", "sort", "limit", "fields"]
     excludedFields.forEach(el => delete queryObj[el])
 
-    // 1B) Advanced filtering
     // In the real world we would then need to write documentation about which requests can be made using which https methods and also what kind of filtering/sorting/etc are available and how they can be used.
     let queryString = JSON.stringify(queryObj)
     queryString = queryString.replace(
@@ -50,47 +27,54 @@ exports.getAllTours = async (req, res) => {
       match => `$${match}`
     )
 
-    let query = Tour.find(JSON.parse(queryString))
+    this.query = this.query.find(JSON.parse(queryString))
 
-    // 2) SORTING
-    if (req.query.sort) {
-      const sortBy = req.query.sort.split(",").join(" ")
-      query = query.sort(sortBy)
+    return this
+  }
+
+  sort() {
+    if (this.queryString.sort) {
+      const sortBy = this.queryString.sort.split(",").join(" ")
+      this.query = this.query.sort(sortBy)
       // sort("price ratingsAverage")
     } else {
-      query = query.sort("-createdAt")
+      this.query = this.query.sort("-createdAt")
     }
+    return this
+  }
 
-    // 3) FIELD LIMITING
-    if (req.query.fields) {
-      const fields = req.query.fields.split(",").join(" ")
-      query = query.select(fields)
+  limitFields() {
+    if (this.queryString.fields) {
+      const fields = this.queryString.fields.split(",").join(" ")
+      this.query = this.query.select(fields)
     } else {
-      query = query.select("-__v")
+      this.query = this.query.select("-__v")
     }
 
-    // 4) PAGINATION
+    return this
+  }
+
+  paginate() {
     // page=3&limit=10, 1-10 page 1, 11-20 page 2, 21-30 page 3
-    const page = req.query.page * 1 || 1
-    const limit = req.query.limit * 1 || 100
+    const page = this.queryString.page * 1 || 1
+    const limit = this.queryString.limit * 1 || 100
     const skip = (page - 1) * limit
 
-    query = query.skip(skip).limit(limit)
+    this.query = this.query.skip(skip).limit(limit)
 
-    if (req.query.page) {
-      const numTours = await Tour.countDocuments()
-      if (skip >= numTours) throw new Error("This page does not exist!")
-    }
+    return this
+  }
+}
 
+exports.getAllTours = async (req, res) => {
+  try {
     // EXECUTE QUERY
-    const tours = await query
-    //query.sort().select().skip().limit()
-
-    // const query = Tour.find()
-    //   .where("duration")
-    //   .equals(5)
-    //   .where("difficulty")
-    //   .equals("easy")
+    const features = new APIFeatures(Tour.find(), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate()
+    const tours = await features.query
 
     // SEND RESPONSE
     res.status(200).json({
