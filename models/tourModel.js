@@ -1,4 +1,5 @@
 const mongoose = require("mongoose")
+const slugify = require("slugify")
 
 const tourSchema = new mongoose.Schema(
   {
@@ -8,6 +9,7 @@ const tourSchema = new mongoose.Schema(
       unique: true,
       trim: true,
     },
+    slug: String,
     duration: {
       type: Number,
       required: [true, "A tour must have a duration!"],
@@ -63,6 +65,13 @@ const tourSchema = new mongoose.Schema(
 // cannot use virtual property in a query because it is not actually part of the database
 tourSchema.virtual("durationWeeks").get(function () {
   return this.duration / 7
+})
+
+// Mongoose has 4 types of Middleware: Document, Query, Aggregate, and Model Middleware
+// DOCUMENT MIDDLEWARE: runs before .save() and .create() **not on .insertMany()**
+tourSchema.pre("save", function (next) {
+  this.slug = slugify(this.name, { lower: true })
+  next()
 })
 
 const Tour = mongoose.model("Tour", tourSchema)
