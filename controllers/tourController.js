@@ -1,5 +1,6 @@
 const Tour = require("../models/tourModel")
 const APIFeatures = require("../utils/apiFeatures")
+const catchAsync = require("../utils/catchAsync")
 
 exports.getTopTours = (req, res, next) => {
   // limit=5&sort=-ratingsAverage,price
@@ -52,12 +53,6 @@ exports.getTour = async (req, res) => {
       status: "fail",
       message: err,
     })
-  }
-}
-
-const catchAsync = fn => {
-  return (req, res, next) => {
-    fn(req, res, next).catch(next)
   }
 }
 
