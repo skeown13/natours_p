@@ -55,27 +55,24 @@ exports.getTour = async (req, res) => {
   }
 }
 
-exports.createTour = async (req, res) => {
-  try {
-    // newTour is a Document that is part of the prototype of the Tour class which is why we have access to the .save() method
-    // const newTour = new Tour({})
-    // newTour.save()
-
-    const newTour = await Tour.create(req.body)
-
-    res.status(201).json({
-      status: "success",
-      data: {
-        tour: newTour,
-      },
-    })
-  } catch (err) {
-    res.status(400).json({
-      status: "fail",
-      message: err,
-    })
+const catchAsync = fn => {
+  return (req, res, next) => {
+    fn(req, res, next).catch(next)
   }
 }
+
+exports.createTour = catchAsync(async (req, res, next) => {
+  // newTour is a Document that is part of the prototype of the Tour class which is why we have access to the .save() method
+
+  const newTour = await Tour.create(req.body)
+
+  res.status(201).json({
+    status: "success",
+    data: {
+      tour: newTour,
+    },
+  })
+})
 
 exports.updateTour = async (req, res) => {
   try {
