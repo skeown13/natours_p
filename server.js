@@ -1,6 +1,15 @@
 // Starting file where everything starts
 const mongoose = require("mongoose")
 const dotenv = require("dotenv")
+
+// Handling Uncaught Exceptions
+process.on("uncaughtException", err => {
+  console.log("UNCAUGHT EXCEPTION! Shutting down...")
+  console.log(err.name, err.message)
+
+  process.exit(1)
+})
+
 // must run the config file before requiring the app file so that the app file has access to the config info
 // only have to do this once and oce it is done all of the config info is added to the process.env which is inately accessible by the entire application
 dotenv.config({ path: "./config.env" })
