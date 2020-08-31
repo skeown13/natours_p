@@ -23,3 +23,13 @@ exports.signup = catchAsync(async (req, res, next) => {
     },
   })
 })
+
+exports.login = (req, res, next) => {
+  const { email, password } = req.body
+
+  // 1) Check in email and passwords exist
+
+  // 2) Check if the user exists && password is correct
+
+  // 3) If everything is okay, send the token to client
+}
