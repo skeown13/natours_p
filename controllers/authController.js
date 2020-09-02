@@ -4,6 +4,12 @@ const User = require("../models/userModel")
 const catchAsync = require("../utils/catchAsync")
 const AppError = require("../utils/appError")
 
+const signToken = id => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN,
+  })
+}
+
 exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
     name: req.body.name,
@@ -12,9 +18,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     passwordConfirm: req.body.passwordConfirm,
   })
 
-  const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
-  })
+  const token = signToken(newUser._id)
 
   res.status(201).json({
     status: "success",
@@ -42,9 +46,21 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 
   // 3) If everything is okay, send the token to client
-  const token = ""
+  const token = signToken(user._id)
   res.status(200).json({
     status: "success",
     token,
   })
+})
+
+exports.protect = catchAsync(async (req, res, next) => {
+  // 1) Getting token and check if it's there (exists)
+
+  // 2) Verification of token
+
+  // 3) Check if user still exists
+
+  // 4) Check if user changed passwords after the token (JWT) was issued
+
+  next()
 })
