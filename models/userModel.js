@@ -46,6 +46,7 @@ userSchema.pre("save", async function (next) {
   next()
 })
 
+// INSTANCE METHOD, so is available on ALL documents of certain collection
 userSchema.methods.correctPassword = async function (
   candidatePassword,
   userPassword
