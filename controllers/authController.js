@@ -55,6 +55,19 @@ exports.login = catchAsync(async (req, res, next) => {
 
 exports.protect = catchAsync(async (req, res, next) => {
   // 1) Getting token and check if it's there (exists)
+  let token
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    token = req.headers.authorization.split(" ")[1]
+  }
+
+  console.log(token)
+
+  if (!token) {
+    return next(new AppError("You must be logged in to view this!", 401))
+  }
 
   // 2) Verification of token
 
