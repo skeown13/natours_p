@@ -92,6 +92,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   next()
 })
 
+// CANNOT pass parameters to a middleware function. Due to this we wrap the middleware function inside a wrapper function.
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {
     // roles is an array (["admin", "lead-guide"]). role = "user"
@@ -103,3 +104,19 @@ exports.restrictTo = (...roles) => {
     next()
   }
 }
+
+exports.forgotPassword = catchAsync(async (req, res, next) => {
+  // 1) Get user based on POSTed email
+  const { email } = req.body
+  const user = await User.findOne({ email })
+  if (!user) {
+    return next(new AppError("There is no user with that email address!", 404))
+  }
+
+  // 2) Generate the random reset token
+  const resetToken = user.createPasswordResetToken()
+  await user.save({ validateBeforeSave: false })
+
+  // 3) Send it to user's email
+})
+exports.resetPassword = (req, res, next) => {}
