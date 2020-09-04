@@ -8,7 +8,7 @@ const sendEmail = async options => {
     port: process.env.EMAIL_PORT,
     auth: {
       user: process.env.EMAIL_USERNAME,
-      password: process.env.EMAIL_PASSWORD,
+      pass: process.env.EMAIL_PASSWORD,
     },
     // ACTIVATE IN GMAIL "less secure app option"
     // shouldn't use gmail in production as you can only send 500 emails a day and will quickly be marked as spam. --- should instead use sendgrid or mailgun
@@ -16,7 +16,7 @@ const sendEmail = async options => {
 
   // 2) Define the email options
   const mailOptions = {
-    from: "Stacy Keown <no@no.no>",
+    from: "Stacy Keown <code@keown.net>",
     to: options.email,
     subject: options.subject,
     text: options.message,
