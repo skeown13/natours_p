@@ -151,4 +151,9 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   }
 })
 
-exports.resetPassword = (req, res, next) => {}
+exports.resetPassword = (req, res, next) => {
+  // 1) Get user bae on the token
+  // 2) If token has not expired and there is a user, set the new password
+  // 3) Update changedPasswordAt property for the user
+  // 4) Log the user in, send JWT
+}
