@@ -23,6 +23,11 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
   })
 })
 
+exports.updateMe = (req, res, next) => {
+  // 1) Create an error if the user POSTs password data
+  // 2) Update user document
+}
+
 exports.getUser = (req, res) => {
   res.status(500).json({
     status: "error",
