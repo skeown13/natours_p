@@ -2,6 +2,7 @@
 
 const User = require("../models/userModel")
 const catchAsync = require("../utils/catchAsync")
+const AppError = require("../utils/appError")
 
 // const users = JSON.parse(
 //   fs.readFileSync(
@@ -25,6 +26,14 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
 
 exports.updateMe = (req, res, next) => {
   // 1) Create an error if the user POSTs password data
+  if (req.body.password || req.body.passwordConfirm) {
+    return next(
+      new AppError(
+        "This route is not for password updates. Please use /updatePassword",
+        400
+      )
+    )
+  }
   // 2) Update user document
 }
 
