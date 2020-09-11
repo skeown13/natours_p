@@ -35,6 +35,10 @@ exports.updateMe = (req, res, next) => {
     )
   }
   // 2) Update user document
+  res.status(200).json({
+    status: "success",
+    message: "Yay!",
+  })
 }
 
 exports.getUser = (req, res) => {
