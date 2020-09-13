@@ -68,6 +68,13 @@ userSchema.pre("save", function (next) {
   next()
 })
 
+// QUERY MIDDLEWARE, can add a step before any other query elsewhere in our application
+userSchema.pre(/^find/, function (next) {
+  // this points to the current query
+  this.find({ active: { $ne: false } })
+  next()
+})
+
 // INSTANCE METHOD, so is available on ALL documents of certain collection
 userSchema.methods.correctPassword = async function (
   candidatePassword,
