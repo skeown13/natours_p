@@ -162,6 +162,16 @@ tourSchema.pre(/^find/, function (next) {
   next()
 })
 
+tourSchema.pre(/^find/, function (next) {
+  // behind the scenes, populate creates a new query which may affect performance (not a big deal for small applications but may notice with larger applications)
+  this.populate({
+    path: "guides",
+    select: "-__v -passwordChangedAt -passwordResetExpires -passwordResetToken",
+  })
+
+  next()
+})
+
 tourSchema.post(/^find/, function (docs, next) {
   console.log(`Query took ${Date.now() - this.start} milliseconds`)
   // console.log(docs)
