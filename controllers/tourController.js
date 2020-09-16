@@ -32,7 +32,11 @@ exports.getAllTours = catchAsync(async (req, res, next) => {
 })
 
 exports.getTour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findById(req.params.id)
+  // behind the scenes, populate creates a new query which may affect performance
+  const tour = await Tour.findById(req.params.id).populate({
+    path: "guides",
+    select: "-__v -passwordChangedAt -passwordResetExpires -passwordResetToken",
+  })
   // Tour.findOne({ _id: req.params.id })
 
   if (!tour) {
