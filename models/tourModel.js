@@ -81,6 +81,33 @@ const tourSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    // An Embedded Object (Sort of.... not in an array...)
+    startLocation: {
+      // GeoJSON to specify geospatial json
+      type: {
+        type: String,
+        default: "Point",
+        enum: ["Point"],
+      },
+      // longitude first and latitude second
+      coordinates: [Number],
+      address: String,
+      description: String,
+    },
+    // in order to create an Embeded Document it MUST be within an array
+    locations: [
+      {
+        type: {
+          type: String,
+          default: "Point",
+          enum: ["Point"],
+        },
+        coordinates: [Number],
+        address: String,
+        description: String,
+        day: Number,
+      },
+    ],
   },
   {
     toJSON: { virtuals: true },
