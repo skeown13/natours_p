@@ -9,3 +9,5 @@ router
   .route("/")
   .get(reviewController.getAllReviews)
   .post(reviewController.createReview)
+
+module.exports = router
