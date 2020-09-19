@@ -128,6 +128,15 @@ tourSchema.virtual("durationWeeks").get(function () {
   return this.duration / 7
 })
 
+// VIRTUAL POPULATE
+tourSchema.virtual("reviews", {
+  ref: "Review",
+  // where the id is actually stored here in this current tourModel
+  localField: "_id",
+  // name of field in other model (Review) where the reference to the current model is stored
+  foreignField: "tour",
+})
+
 // Mongoose has 4 types of Middleware: Document, Query, Aggregate, and Model Middleware
 // DOCUMENT MIDDLEWARE: runs before .save() and .create() **not on .insertMany()**
 tourSchema.pre("save", function (next) {
