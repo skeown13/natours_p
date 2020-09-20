@@ -52,3 +52,8 @@ reviewSchema.pre(/^find/, function (next) {
 const Review = mongoose.model("Review", reviewSchema)
 
 module.exports = Review
+
+// Nested route - make sense when there is a clear parent/child relationship
+// POST /tour/3a53da523/reviews
+// GET /tour/3a53da523/reviews
+// GET /tour/3a53da523/reviews/243kkl2344j
