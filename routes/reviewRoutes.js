@@ -4,6 +4,7 @@ const express = require("express")
 const reviewController = require("../controllers/reviewController")
 const authController = require("../controllers/authController")
 
+// Option of mergeParams: true allows for params such as the :tourId param in tourRoutes.js to be merged (accessed) here in the reviewRoutes.js
 const router = express.Router({ mergeParams: true })
 
 router
