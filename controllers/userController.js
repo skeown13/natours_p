@@ -1,6 +1,7 @@
 const User = require("../models/userModel")
 const catchAsync = require("../utils/catchAsync")
 const AppError = require("../utils/appError")
+const factory = require("./handlerFactory")
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {}
@@ -131,21 +132,4 @@ exports.updateUser = (req, res) => {
   // })
 }
 
-exports.deleteUser = (req, res) => {
-  res.status(500).json({
-    status: "error",
-    message: "This route is not yet defined!",
-  })
-  // if (req.params.id * 1 > users.length) {
-  //   return res.status(404).json({
-  //     status: "fail",
-  //     message: "Invalid ID",
-  //   })
-  // }
-
-  // // status code 204 is "no content"
-  // res.status(204).json({
-  //   status: "success",
-  //   data: null,
-  // })
-}
+exports.deleteUser = factory.deleteOne(User)
