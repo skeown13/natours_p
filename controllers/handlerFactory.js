@@ -1,13 +1,19 @@
-exports.deleteTour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findByIdAndDelete(req.params.id)
+const catchAsync = require("../utils/catchAsync")
+const AppError = require("../utils/appError")
 
-  if (!tour) {
-    return next(new AppError("No tour found with that ID", 404))
-  }
+// Create a function that returns a function
 
-  // status code 204 is "no content"
-  res.status(204).json({
-    status: "success",
-    data: null,
+exports.deleteOne = Model =>
+  catchAsync(async (req, res, next) => {
+    const doc = await Model.findByIdAndDelete(req.params.id)
+
+    if (!doc) {
+      return next(new AppError("No document found with that ID", 404))
+    }
+
+    // status code 204 is "no content"
+    res.status(204).json({
+      status: "success",
+      data: null,
+    })
   })
-})
