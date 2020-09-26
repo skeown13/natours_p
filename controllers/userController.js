@@ -112,24 +112,7 @@ exports.createUser = (req, res) => {
   // )
 }
 
-exports.updateUser = (req, res) => {
-  res.status(500).json({
-    status: "error",
-    message: "This route is not yet defined!",
-  })
-  // if (req.params.id * 1 > users.length) {
-  //   return res.status(404).json({
-  //     status: "fail",
-  //     message: "Invalid ID",
-  //   })
-  // }
-
-  // res.status(200).json({
-  //   status: "success",
-  //   data: {
-  //     user: "<Updated (placeholder) user here...>",
-  //   },
-  // })
-}
+// Only for administrators and only for updating data that is not the password (update) - DO NOT UPDATE PASSWORD WITH THIS
+exports.updateUser = factory.updateOne(User)
 
 exports.deleteUser = factory.deleteOne(User)
