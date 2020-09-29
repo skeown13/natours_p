@@ -36,3 +36,17 @@ exports.updateOne = Model =>
       },
     })
   })
+
+exports.createOne = Model =>
+  catchAsync(async (req, res, next) => {
+    // doc is a Document that is part of the prototype of the Tour class which is why we have access to the .save() method
+
+    const doc = await Model.create(req.body)
+
+    res.status(201).json({
+      status: "success",
+      data: {
+        data: doc,
+      },
+    })
+  })
