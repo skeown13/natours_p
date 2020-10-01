@@ -1,7 +1,7 @@
 const catchAsync = require("../utils/catchAsync")
 const AppError = require("../utils/appError")
 
-// Create a function that returns a function
+// Create a function that returns a function - these will all be called in the other Controller files
 
 exports.deleteOne = Model =>
   catchAsync(async (req, res, next) => {
@@ -40,7 +40,6 @@ exports.updateOne = Model =>
 exports.createOne = Model =>
   catchAsync(async (req, res, next) => {
     // doc is a Document that is part of the prototype of the Tour class which is why we have access to the .save() method
-
     const doc = await Model.create(req.body)
 
     res.status(201).json({
