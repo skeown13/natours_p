@@ -14,6 +14,14 @@ router.patch(
   authController.protect,
   authController.updatePassword
 )
+
+router.get(
+  "/me",
+  authController.protect,
+  userController.getMe,
+  userController.getUser
+)
+
 router.patch("/updateMe", authController.protect, userController.updateMe)
 // We are not actually deleting the user from the database, but since the user will no longer be accessible from anywhere it is still okay to use the http method of delete
 router.delete("/deleteMe", authController.protect, userController.deleteMe)
