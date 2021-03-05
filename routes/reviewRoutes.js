@@ -18,9 +18,6 @@ router
     reviewController.createReview
   )
 
-// admin can edit/delete reviews
-// guides cannot add/edit/delete reviews
-
 router
   .route("/:id")
   .get(reviewController.getReview)
