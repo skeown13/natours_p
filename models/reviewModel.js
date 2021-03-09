@@ -1,5 +1,4 @@
 const mongoose = require("mongoose")
-const { findByIdAndUpdate, findByIdAndDelete } = require("./tourModel")
 const Tour = require("./tourModel")
 
 const reviewSchema = new mongoose.Schema(
@@ -53,7 +52,6 @@ reviewSchema.pre(/^find/, function (next) {
 
 //Static Method can be called on Model Directly
 reviewSchema.statics.calcAverageRatings = async function (tourId) {
-  console.log(tourId)
   //aggregation pipeline (must be called on model)
   // In static method this keyword points to the model
   const stats = await this.aggregate([
@@ -68,7 +66,7 @@ reviewSchema.statics.calcAverageRatings = async function (tourId) {
       },
     },
   ])
-  console.log(stats)
+  // console.log(stats)
 
   // not storing the result value of the promise anywhere bc it is not needed elsewhere. We just want to update it.
   if (stats.length > 0) {
@@ -97,8 +95,9 @@ reviewSchema.post("save", function () {
 
 // here cannot change .pre to .post as we did before because we would then no longer have access to the query because it would have already been executed
 reviewSchema.pre(/^findOneAnd/, async function (next) {
+  // retrieve current doc from database and store on current query variable which gives us access to it in the post middleware
   this.r = await this.findOne()
-  console.log(this.r)
+  // console.log(this.r)
   next()
 })
 
