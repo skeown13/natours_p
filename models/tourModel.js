@@ -123,6 +123,9 @@ const tourSchema = new mongoose.Schema(
   }
 )
 
+tourSchema.index({ price: 1, ratingsAverage: -1 })
+tourSchema.index({ slug: 1 })
+
 // cannot use virtual property in a query because it is not actually part of the database
 tourSchema.virtual("durationWeeks").get(function () {
   return this.duration / 7
