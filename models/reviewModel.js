@@ -1,4 +1,5 @@
 const mongoose = require("mongoose")
+const Tour = require("./tourModel")
 
 const reviewSchema = new mongoose.Schema(
   {
@@ -67,6 +68,12 @@ reviewSchema.statics.calcAverageRatings = async function (tourId) {
     },
   ])
   console.log(stats)
+
+  // not storing the result value of the promise anywhere bc it is not needed elsewhere. We just want to update it.
+  await Tour.findByIdAndUpdate(tourId, {
+    ratingsQuantity: stats[0].nRating,
+    ratingsAverage: stats[0].avgRating,
+  })
 }
 
 // post does not have access to next
