@@ -70,7 +70,7 @@ reviewSchema.statics.calcAverageRatings = async function (tourId) {
 }
 
 // post does not have access to next
-reviewSchema.post("save", function() {
+reviewSchema.post("save", function () {
   // this points to current review
 
   this.constructor.calcAverageRatings(this.tour)
