@@ -83,6 +83,8 @@ exports.getAll = Model =>
       .limitFields()
       .paginate()
     const doc = await features.query
+    // We used the .explain() to see indexes in Postman
+    // const doc = await features.query.explain()
 
     // SEND RESPONSE
     res.status(200).json({
