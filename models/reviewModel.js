@@ -1,4 +1,5 @@
 const mongoose = require("mongoose")
+const { findByIdAndUpdate, findByIdAndDelete } = require("./tourModel")
 const Tour = require("./tourModel")
 
 const reviewSchema = new mongoose.Schema(
@@ -70,17 +71,40 @@ reviewSchema.statics.calcAverageRatings = async function (tourId) {
   console.log(stats)
 
   // not storing the result value of the promise anywhere bc it is not needed elsewhere. We just want to update it.
-  await Tour.findByIdAndUpdate(tourId, {
-    ratingsQuantity: stats[0].nRating,
-    ratingsAverage: stats[0].avgRating,
-  })
+  if (stats.length > 0) {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: stats[0].nRating,
+      ratingsAverage: stats[0].avgRating,
+    })
+  } else {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: 0,
+      ratingsAverage: 4.5,
+    })
+  }
 }
 
 // post does not have access to next
 reviewSchema.post("save", function () {
   // this points to current review
-
+  // can't use 'Review' because the model has not yet been created. Can't place this post after Review created becasue then it would not be a part of the model.
   this.constructor.calcAverageRatings(this.tour)
+})
+
+// We do NOT have document access to these two but only query middleware.
+// findByIdAndUpdate
+// findByIdAndDelete
+
+// here cannot change .pre to .post as we did before because we would then no longer have access to the query because it would have already been executed
+reviewSchema.pre(/^findOneAnd/, async function (next) {
+  this.r = await this.findOne()
+  console.log(this.r)
+  next()
+})
+
+reviewSchema.post(/^findOneAnd/, async function () {
+  // await this.findOne(); does NOT work here, query has already executed
+  await this.r.constructor.calcAverageRatings(this.r.tour)
 })
 
 const Review = mongoose.model("Review", reviewSchema)
