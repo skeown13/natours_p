@@ -126,6 +126,8 @@ const tourSchema = new mongoose.Schema(
 
 tourSchema.index({ price: 1, ratingsAverage: -1 })
 tourSchema.index({ slug: 1 })
+// geospatial index needs to be 2d sphere index
+tourSchema.index({ startLocation: "2dsphere" })
 
 // cannot use virtual property in a query because it is not actually part of the database
 tourSchema.virtual("durationWeeks").get(function () {
